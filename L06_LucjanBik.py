@@ -45,13 +45,9 @@ class HangmanGame:
         return list(filter(lambda char: char != '_', self.board))
 
     def start(self):
+        self.clear_prevoius_state()
         index = random.randint(0, len(self.passwords) - 1)
         self.password =  self.passwords.__getitem__(index)
-        self.board = ['_' for x in range(len(self.password))]
-        self.splitted_password = list(self.password)
-
-    def start(self, new_password):
-        self.password = new_password
         self.board = ['_' for x in range(len(self.password))]
         self.splitted_password = list(self.password)
 
@@ -101,6 +97,12 @@ class HangmanGame:
                 return False
         return True
 
+    def clear_prevoius_state(self):
+        self.board = []
+        self.mistake = 0
+        self.password = ''
+        self.splitted_password = []
+
 class HangmanAI(object):
 
     def __init__(self, dictionary, max_mistakes):
@@ -111,20 +113,32 @@ class HangmanAI(object):
         self.mistakes = 0
         self.all_passwords = self.validate_content_file()
         self.possible_passwords = []
+        self.possible_password = ''
+        self.possible_character = ''
 
 
 
     def start(self, length):  # podajemy dlugosc slowa
         self.clear_prevoius_state()
         self.match_password_by_length(length)
+        index = random.randint(0, len(self.possible_passwords) - 1)
+
+        self.possible_character = self.possible_passwords[index]
+        self.board = ['_' for x in range(length)]
+
 
 
 
     def get_guess(self):  # zwraca litere ktora powinniśmy zgadywac
-        pass
+        self.possible_character = 'a'
+        return self.possible_character
 
     def update_response(self, response):  # robimy cos z odpowiedzia gry
-        pass
+        if len(response) == 0:
+            self.invalid_characters.append(self.possible_character)
+        else:
+            for index in response:
+                self.board[index] = self.possible_character
 
     def clear_prevoius_state(self):
         self.board = []
@@ -152,30 +166,42 @@ class HangmanAI(object):
 
 # game = HangmanGame('slownik.txt', max_mistakes=6) # inicjujemy gre
 game = HangmanGame('valid_slownik.txt', max_mistakes=6) # inicjujemy gre
-# game.start() # losujemy slowo
-game.start("credentials") # losujemy slowo
-print(game.get_password())
 
-print('Slowo ma', game.get_word_length(), 'liter') # pobieramy dlugosc wylosowanego slowa
+while True:
+    game.start()  # losujemy slowo
+    # print(game.get_password())
+    print('Slowo ma', game.get_word_length(), 'liter') # pobieramy dlugosc wylosowanego slowa
+    good_guess = []
+    bad_guess = []
+    while not game.finished():  # finished() zwraca True gdy gra sie zakonczyla
+        print("Guess a letter: ")
+        userinput = sys.stdin.readline().rstrip('\n')
+
+        user_guess = game.guess(userinput)
+        if len(user_guess) == 0:
+            bad_guess.append(userinput)
+        else:
+            good_guess.append(userinput)
+
+        print(good_guess)
+        print("bad guesses " + str(game.get_mistakes()) + "/" + str(game.get_max_mistake()) + " " + str(bad_guess))
+        # print(game.get_board())
 
 
-good_guess = []
-bad_guess = []
-while not game.finished():  # finished() zwraca True gdy gra sie zakonczyla
-    print("Guess a letter: ")
-    userinput = sys.stdin.readline().rstrip('\n')
-
-    user_guess = game.guess(userinput)
-    if len(user_guess) == 0:
-        bad_guess.append(userinput)
-        print(bad_guess)
-        print("bad guesses " + str(game.get_mistakes()) + "/" + str(game.get_max_mistake()) + " " + str(good_guess))
+    # print(game.did_I_win())  # True jesli wygralismy, False w przeciwnym przypadku
+    if (game.did_I_win()):
+        print("YOU WON")
     else:
-        good_guess.append(userinput)
-        print("good guesses " + str(game.get_mistakes()) + "/" + str(game.get_max_mistake()) + " " + str(good_guess))
+        print("YOU LOST ! The word you were looking for is:" + game.get_password())
 
+    userinput = ""
+    while True:
+        print("Do you want to play again? (Y/N):")
+        userinput = sys.stdin.readline().rstrip('\n')
+        if userinput == "Y" or userinput == "N":
+            break
 
-    print(game.get_board())
+    if userinput == 'N':
+        print("Ok, good bye!")
+        break
 
-
-print(game.did_I_win())  # True jesli wygralismy, False w przeciwnym przypadku
