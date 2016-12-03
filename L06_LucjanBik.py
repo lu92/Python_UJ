@@ -159,20 +159,20 @@ print(game.get_password())
 print('Slowo ma', game.get_word_length(), 'liter') # pobieramy dlugosc wylosowanego slowa
 
 
-guessed_characters = []
+good_guess = []
 bad_guess = []
 while not game.finished():  # finished() zwraca True gdy gra sie zakonczyla
     print("Guess a letter: ")
     userinput = sys.stdin.readline().rstrip('\n')
 
-    guess = game.guess(userinput)
-    if len(guess) == 0:
+    user_guess = game.guess(userinput)
+    if len(user_guess) == 0:
         bad_guess.append(userinput)
         print(bad_guess)
-        print("bad guesses " + str(game.get_mistakes()) + "/" + str(game.get_max_mistake()) + " " + str(guessed_characters))
+        print("bad guesses " + str(game.get_mistakes()) + "/" + str(game.get_max_mistake()) + " " + str(good_guess))
     else:
-        guessed_characters.append(guess)
-        print("good guesses " + str(game.get_mistakes()) + "/" + str(game.get_max_mistake()) + " " + str(guessed_characters))
+        good_guess.append(userinput)
+        print("good guesses " + str(game.get_mistakes()) + "/" + str(game.get_max_mistake()) + " " + str(good_guess))
 
 
     print(game.get_board())
