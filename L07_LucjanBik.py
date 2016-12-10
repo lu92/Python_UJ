@@ -1,23 +1,5 @@
 import timeit
 
-# print(timeit.timeit('for i in range(100000): i', number=100))
-#
-# print(timeit.timeit('char in text', setup='text = "sample string"; char = "g"'))
-# print(timeit.timeit('text.find(char)', setup='text = "sample string"; char = "g"'))
-# print(timeit.timeit('len([a==char for a in text])>0', setup='text = "sample string"; char = "g"'))
-#
-# # Jak szybkie sa metody laczenia stringow?
-# codes = {
-#     '" ".join(chars)',
-#     'from functools import reduce; reduce(lambda a, b : a + " " + b, chars)',
-#     'for a in chars: word += a + " ";'
-# }
-#
-# for code in codes:
-#     print(code)
-#     print(timeit.timeit(code, setup='chars = ["a"] * 1000; word = ""', number=1000))
-# print()
-
 # zadanie 1
 
 # a) Konkatenacja stałej długości stringów
@@ -105,5 +87,28 @@ print("1d_b test: " + str(zad1d_b))
 
 zad1d_c = timeit.timeit('[x for x in filter(lambda x: x%2 ==0, numbers)]', setup='numbers={0};'.format(numbers), number=1000)
 print("1d_c test: " + str(zad1d_c))
+
+# e) Stwórz listę używając funkcji, np. stwórz listę długości słów z innej listy ['ala', 'olek'] -> [3, 4]
+
+zad1e_a = timeit.timeit('upper_names = []\nfor name in names: \n\tupper_names.append(len(name))', setup='upper_names=[]; names=["ala", "alek"];', number=1000)
+print("1e_a test: " + str(zad1e_a))
+
+zad1e_b = timeit.timeit('[len(name) for name in names]', setup='names=["ala", "alek"];', number=1000)
+print("1e_b test: " + str(zad1e_b))
+
+zad1e_c = timeit.timeit('list(map(lambda name: len(name),names))', setup='names=["ala", "alek"];', number=1000)
+print("1e_c test: " + str(zad1e_c))
+
+# g) Konkatenacja stałej długości stringów, z wykorzystaniem rzutowania
+
+# przy pomocy + czyli np. str(a)+str(b)+str(c)+str(d) dla zdefiniowanych nie stringów a,b,c,d
+zad1g_a = timeit.timeit('word=str(123) + str(0.007) + str(\'X\') + str(float(1.0000))', setup='word="";', number=1000)
+print("1e_a test: " + str(zad1g_a))
+
+zad1g_b = timeit.timeit('word="%s%s%s%s" % (str(123), str(0.007), str(\'X\'), str(float(1.0000)))', setup='word="";', number=1000)
+print("1e_b test: " + str(zad1g_b))
+
+zad1g_c = timeit.timeit('word="{}{}{}{}".format(str(123), str(0.007), str(\'X\'), str(float(1.0000)))', setup='word="";', number=1000)
+print("1e_c test: " + str(zad1g_c))
 
 
