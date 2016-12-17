@@ -1,7 +1,7 @@
 import random
 import unittest
 
-from lab8 import sorting
+import sorting
 
 
 class InsertionSortTestCases(unittest.TestCase):
